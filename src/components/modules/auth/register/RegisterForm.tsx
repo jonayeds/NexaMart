@@ -19,8 +19,10 @@ const RegisterForm = () => {
   const form = useForm({
     resolver:zodResolver(registerSchema)
   });
+  const password = form.watch("password")
+  const confirmPassword = form.watch("confirmPassword")
   const onSubmit:SubmitErrorHandler<FieldValues> = (data) => {
-    console.log(data);
+
   };
   return (
     <div className="max-w-[40vw] mx-auto border-2 border-gray-400 p-8 rounded-xl">
@@ -90,7 +92,10 @@ const RegisterForm = () => {
       <FormItem>
         <div className="flex items-center justify-between">
         <FormLabel  >Confirm Password</FormLabel>
-        <FormMessage  className="text-xs" />
+        {
+          confirmPassword && password!== confirmPassword ? <FormMessage  className="text-xs" >Password dosen`t match</FormMessage> : ""
+        }
+        {/* <FormMessage  className="text-xs" /> */}
         </div>
         <FormControl>
             <Input {...field} type="password" value={field.value || ""}/>
@@ -98,7 +103,7 @@ const RegisterForm = () => {
       </FormItem>
     )}
   />
-  <Button className="w-full" type="submit">Register</Button>
+  <Button disabled={(password!== confirmPassword) || !password  } className="w-full" type="submit">Register</Button>
         </form>
       </Form>
       <div className="flex gap-2 justify-center mt-4  items-center">
