@@ -14,6 +14,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { FieldValues, SubmitErrorHandler, useForm } from "react-hook-form";
 import { registerSchema } from "./registerValidation";
+import { register } from "@/services/AuthService";
+import { toast } from "sonner";
 
 const RegisterForm = () => {
   const form = useForm({
@@ -21,7 +23,19 @@ const RegisterForm = () => {
   });
   const password = form.watch("password")
   const confirmPassword = form.watch("confirmPassword")
-  const onSubmit:SubmitErrorHandler<FieldValues> = (data) => {
+  const  {formState:{isSubmitting}} = form
+  const onSubmit:SubmitErrorHandler<FieldValues> = async(data) => {
+    const {email, name, password} = data
+    try {
+      const res = await register({email, name, password})
+      if(res?.success){
+        toast.success(res?.message)
+      }else{
+        toast.error(res?.message)
+      }
+    } catch (error) {
+      console.log(error)
+    }
 
   };
   return (
@@ -103,7 +117,7 @@ const RegisterForm = () => {
       </FormItem>
     )}
   />
-  <Button disabled={(password!== confirmPassword) || !password  } className="w-full" type="submit">Register</Button>
+  <Button disabled={(password!== confirmPassword) || !password  } className="w-full" type="submit">{isSubmitting? "Registering...":"Register"}</Button>
         </form>
       </Form>
       <div className="flex gap-2 justify-center mt-4  items-center">
