@@ -1,4 +1,5 @@
 "use client";
+import ReCAPTCHA from "react-google-recaptcha";
 import Logo from "@/app/assets/svgs/Logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +26,11 @@ const LoginForm = () => {
   const password = form.watch("password")
   const email = form.watch("email")
   const  {formState:{isSubmitting}} = form
+
+  const handleReCaptcha = (value:string|null)=>{
+    console.log(value)
+  }
+
   const onSubmit:SubmitErrorHandler<FieldValues> = async(data) => {
     const {email, password} = data
     try {
@@ -40,7 +46,7 @@ const LoginForm = () => {
 
   };
   return (
-    <div className="max-w-[40vw] mx-auto border-2 border-gray-400 p-8 rounded-xl">
+    <div className="lg:w-[40vw] w-[90vw] mx-auto border-2 border-gray-400 p-8 rounded-xl">
         <div className="flex items-center gap-2 justify-center">
             <Logo/>
             <div>
@@ -85,7 +91,11 @@ const LoginForm = () => {
       </FormItem>
     )}
   />
-  
+  <div className="w-full  flex justify-center  pt-4  ">
+    {/* https://www.npmjs.com/package/react-google-recaptcha --> for installing react-recaptcha */}
+    {/* https://www.google.com/recaptcha/admin/create  --> to add a new recaptcha  */}
+  <ReCAPTCHA className=" " onChange={handleReCaptcha}  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY as string} />
+  </div>
   <Button disabled={ !(email && password) } className="w-full" type="submit">{isSubmitting? "Logging In...":"Login"}</Button>
         </form>
       </Form>
