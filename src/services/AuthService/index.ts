@@ -56,6 +56,8 @@ export const getCurrentUser = async()=>{
 
 }
 
+
+// https://developers.google.com/recaptcha/docs/verify --> to verify recaptcha
 export const recaptchaTokenValrification = async(token:string)=>{
     try {
         const res = await fetch(`https://www.google.com/recaptcha/api/siteverify`,{

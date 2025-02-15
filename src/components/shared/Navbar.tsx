@@ -1,6 +1,16 @@
 import Logo from "@/app/assets/svgs/Logo";
 import { Button } from "../ui/button";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, LogOut, ShoppingBag } from "lucide-react";
+import Link from "next/link";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function Navbar() {
   return (
@@ -18,12 +28,52 @@ export default function Navbar() {
           />
         </div>
         <nav className="flex gap-2">
-          <Button variant="outline" className="rounded-full border-[1px] border-gray-300 p-0 size-10">
+          <Button
+            variant="outline"
+            className="rounded-full border-[1px] border-gray-300 p-0 size-10"
+          >
             <Heart />
           </Button>
-          <Button variant="outline" className="rounded-full border-[1px] border-gray-300 p-0 size-10">
+          <Button
+            variant="outline"
+            className="rounded-full border-[1px] border-gray-300 p-0 size-10"
+          >
             <ShoppingBag />
           </Button>
+          <Link href={"/login"}>
+            <Button
+              className="border-[1px] border-gray-300"
+              variant={"outline"}
+            >
+              Login
+            </Button>
+          </Link>
+          <Link href={"/create-shop"}>
+            <Button
+              className="border-[1px] border-gray-300"
+              variant={"outline"}
+            >
+              Create Shop
+            </Button>
+          </Link>
+          {/* Drop down user avatar */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="outline-none">
+              <Avatar >
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>User</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>Dashboard</DropdownMenuItem>
+              <DropdownMenuItem>My Shop</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem><span><LogOut/></span>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
       </div>
     </header>
