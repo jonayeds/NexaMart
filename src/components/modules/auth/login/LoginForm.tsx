@@ -15,9 +15,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { FieldValues, SubmitErrorHandler, useForm } from "react-hook-form";
 
-import { login } from "@/services/AuthService";
+import { login, recaptchaTokenValrification } from "@/services/AuthService";
 import { toast } from "sonner";
 import { loginSchema } from "./loginValidation";
+import { useState } from "react";
 
 const LoginForm = () => {
   const form = useForm({
@@ -25,10 +26,20 @@ const LoginForm = () => {
   });
   const password = form.watch("password")
   const email = form.watch("email")
+
   const  {formState:{isSubmitting}} = form
 
-  const handleReCaptcha = (value:string|null)=>{
-    console.log(value)
+  const [reCaptchaStatus, setReCaptchaStatus] = useState(false)
+
+  const handleReCaptcha = async(value:string|null)=>{
+    try {
+        const res = await recaptchaTokenValrification(value!)
+        if(res.success){
+            setReCaptchaStatus(true)
+        }
+    } catch (error) {
+        console.error(error)
+    }
   }
 
   const onSubmit:SubmitErrorHandler<FieldValues> = async(data) => {
@@ -96,7 +107,7 @@ const LoginForm = () => {
     {/* https://www.google.com/recaptcha/admin/create  --> to add a new recaptcha  */}
   <ReCAPTCHA className=" " onChange={handleReCaptcha}  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY as string} />
   </div>
-  <Button disabled={ !(email && password) } className="w-full" type="submit">{isSubmitting? "Logging In...":"Login"}</Button>
+  <Button disabled={ !(email && password && reCaptchaStatus)  } className="w-full" type="submit">{isSubmitting? "Logging In...":"Login"}</Button>
         </form>
       </Form>
       <div className="flex gap-2 justify-center mt-4  items-center">
