@@ -75,3 +75,7 @@ export const recaptchaTokenValrification = async(token:string)=>{
         return error
     }
 }
+
+export const logout = async()=>{
+    (await cookies()).delete("accessToken")
+}

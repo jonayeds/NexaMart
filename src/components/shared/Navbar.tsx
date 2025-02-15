@@ -1,3 +1,4 @@
+"use client"
 import Logo from "@/app/assets/svgs/Logo";
 import { Button } from "../ui/button";
 import { Heart, LogOut, ShoppingBag } from "lucide-react";
@@ -11,8 +12,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { logout } from "@/services/AuthService";
+import { useUser } from "@/context/UserContext";
 
 export default function Navbar() {
+  const {user, isLoading, setIsLoading} = useUser()
+  const handleLogout =()=>{
+    logout()
+    setIsLoading(true)
+  }
   return (
     <header className="border-b w-full">
       <div className="container flex justify-between items-center mx-auto h-16 px-3">
@@ -40,19 +48,14 @@ export default function Navbar() {
           >
             <ShoppingBag />
           </Button>
-          <Link href={"/login"}>
-            <Button
-              className="border-[1px] border-gray-300"
-              variant={"outline"}
-            >
-              Login
-            </Button>
-          </Link>
+          {
+            user? 
+            <>
           <Link href={"/create-shop"}>
             <Button
               className="border-[1px] border-gray-300"
               variant={"outline"}
-            >
+              >
               Create Shop
             </Button>
           </Link>
@@ -71,9 +74,21 @@ export default function Navbar() {
               <DropdownMenuItem>Dashboard</DropdownMenuItem>
               <DropdownMenuItem>My Shop</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem><span><LogOut/></span>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout} className="cursor-pointer" ><span><LogOut/></span>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+              </>
+            : <Link href={"/login"}>
+            <Button
+              className="border-[1px] border-gray-300"
+              variant={"outline"}
+            >
+              Login
+            </Button>
+          </Link>
+          }
+          
+          
         </nav>
       </div>
     </header>
