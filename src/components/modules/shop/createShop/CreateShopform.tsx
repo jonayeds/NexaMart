@@ -18,9 +18,11 @@ import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import NMImageUploader from "@/components/ui/core/NMImageUploader";
 import { useState } from "react";
+import ImagePreviewer from "@/components/ui/core/NMImageUploader/ImagePreviewer";
 
 const CreateShopForm = () => {
   const [imageFiles, setImageFiles] = useState<File[] | []>([])
+  const [imagePreview, setImagePreview] = useState<string[]|[]>([])
   const form = useForm({
     // resolver:zodResolver(registerSchema)
   });
@@ -36,7 +38,7 @@ const CreateShopForm = () => {
 
   };
   return (
-    <div className="max-w-[70vw] mx-auto border-2 border-gray-400 p-8 mt-16 rounded-xl">
+    <div className="max-w-[70vw] mx-auto border-2 border-gray-400 p-8 my-16 rounded-xl">
         <div className="flex items-center gap-2 justify-center">
             <Logo/>
             <div>
@@ -231,7 +233,7 @@ const CreateShopForm = () => {
     control={form.control}
     name="servicesOffered"
     render={({field}) => (
-        <FormItem className="md:col-span-3 col-span-2">
+        <FormItem className=" col-span-4 md:col-span-3">
         <div className="flex items-center justify-between ">
         <FormLabel  >Services Offered</FormLabel>
         <FormMessage  className="text-xs" />
@@ -243,8 +245,15 @@ const CreateShopForm = () => {
     )}
     />
 
-    <div className="flex justify-center items-center md:col-span-1 col-span-2">
-      <NMImageUploader imageFiles ={imageFiles} setImageFiles={setImageFiles}/>
+    <div className="flex justify-center items-center col-span-4 md:col-span-1 min-h-28s duration-300">
+      {
+        imagePreview.length>0? 
+        <ImagePreviewer imagePreview={imagePreview} setImageFiles={setImageFiles} setImagePreview={setImagePreview} className=" " />
+        :
+        <NMImageUploader lebel="Upload logo"  setImagePreview={setImagePreview} imageFiles ={imageFiles} setImageFiles={setImageFiles}/> 
+      }
+      
+       
     </div>
     
     </div>
