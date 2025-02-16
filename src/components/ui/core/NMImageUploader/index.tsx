@@ -12,7 +12,7 @@ type TImageUploaderProps ={
 }
 
 
-const NMImageUploader = ({imageFiles, setImageFiles, setImagePreview, lebel, className}:TImageUploaderProps) => {
+const NMImageUploader = ({ setImageFiles, setImagePreview, lebel, className}:TImageUploaderProps) => {
     
     
     const handleImagechange = (e: React.ChangeEvent<HTMLInputElement>)=>{
@@ -27,7 +27,6 @@ const NMImageUploader = ({imageFiles, setImageFiles, setImagePreview, lebel, cla
             e.target.value = ""
         }
     }
-    console.log(imageFiles)
   return (
     <div className={cn("", className)}>
         <label htmlFor='image-uploader' className='bg-gray-100  w-28 h-28  size-28  flex items-center  justify-center border-2 border-dashed border-gray-400 rounded-md cursor-pointer hover:bg-white'>{lebel}</label>

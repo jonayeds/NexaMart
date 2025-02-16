@@ -12,13 +12,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { FieldValues, SubmitErrorHandler, useForm } from "react-hook-form";
-import { register } from "@/services/AuthService";
+import { FieldValues,  SubmitHandler,  useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import NMImageUploader from "@/components/ui/core/NMImageUploader";
 import { useState } from "react";
 import ImagePreviewer from "@/components/ui/core/NMImageUploader/ImagePreviewer";
+import { createShop } from "@/services/Shop";
 
 const CreateShopForm = () => {
   const [imageFiles, setImageFiles] = useState<File[] | []>([])
@@ -27,10 +27,25 @@ const CreateShopForm = () => {
     // resolver:zodResolver(registerSchema)
   });
   const  {formState:{isSubmitting}} = form
-  const onSubmit:SubmitErrorHandler<FieldValues> = async(data) => {
-    
+  const onSubmit:SubmitHandler<FieldValues> = async(data) => {
+    const servicesOffered = data?.servicesOffered?.split(",").map((service: string) => service.trim()).filter((service:string) => service !== "")
+    const modifiedData = {
+      ...data,
+       servicesOffered,
+       establishedYear: Number(data?.establishedYear),
+
+     }
     try {
-      console.log(data)
+      const formData = new FormData()
+      formData.append("data",JSON.stringify(modifiedData))
+      formData.append("logo",JSON.stringify(imageFiles[0]))
+      const res = await createShop(formData)
+      console.log(res)
+      if(res?.success){
+        toast.success(res?.message)
+      }else{
+        toast.error(res?.message)
+      }
       
     } catch (error) {
       console.log(error)
@@ -113,7 +128,7 @@ const CreateShopForm = () => {
         <FormMessage  className="text-xs" />
         </div>
         <FormControl>
-            <Input {...field} type="number" value={field.value || ""}/>
+            <Input {...field} type="text" value={field.value || ""}/>
         </FormControl>
       </FormItem>
     )}
@@ -167,7 +182,7 @@ const CreateShopForm = () => {
         <FormMessage  className="text-xs" />
         </div>
         <FormControl>
-            <Input {...field} type="number" value={field.value || ""}/>
+            <Input {...field} type="text" value={field.value || ""}/>
         </FormControl>
       </FormItem>
     )}
@@ -239,7 +254,7 @@ const CreateShopForm = () => {
         <FormMessage  className="text-xs" />
         </div>
         <FormControl>
-          <Textarea className="bg-white h-[10vh]"/>
+          <Textarea {...field} value={field.value || ""} className="bg-white h-[10vh]"/>
         </FormControl>
       </FormItem>
     )}
@@ -259,13 +274,9 @@ const CreateShopForm = () => {
     </div>
 
 
-  <Button className="w-full" type="submit">{isSubmitting? "Registering...":"Register"}</Button>
+  <Button className="w-full" type="submit">{isSubmitting? "Creating...":"Create"}</Button>
         </form>
       </Form>
-      <div className="flex gap-2 justify-center mt-4  items-center">
-        <p>Already have an account ?</p>
-        <Link className="text-purple-500 text-sm underline " href={"/login"}>Login</Link>
-      </div>
     </div>
   );
 };

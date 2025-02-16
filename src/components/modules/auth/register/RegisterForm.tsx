@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { FieldValues, SubmitErrorHandler, useForm } from "react-hook-form";
+import { FieldValues,  SubmitHandler, useForm } from "react-hook-form";
 import { registerSchema } from "./registerValidation";
 import { register } from "@/services/AuthService";
 import { toast } from "sonner";
@@ -24,7 +24,7 @@ const RegisterForm = () => {
   const password = form.watch("password")
   const confirmPassword = form.watch("confirmPassword")
   const  {formState:{isSubmitting}} = form
-  const onSubmit:SubmitErrorHandler<FieldValues> = async(data) => {
+  const onSubmit:SubmitHandler<FieldValues> = async(data) => {
     const {email, name, password} = data
     try {
       const res = await register({email, name, password})

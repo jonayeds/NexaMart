@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { FieldValues, SubmitErrorHandler, useForm } from "react-hook-form";
+import { FieldValues,  SubmitHandler, useForm } from "react-hook-form";
 
 import { login, recaptchaTokenValrification } from "@/services/AuthService";
 import { toast } from "sonner";
@@ -42,7 +42,7 @@ const LoginForm = () => {
     }
   }
 
-  const onSubmit:SubmitErrorHandler<FieldValues> = async(data) => {
+  const onSubmit:SubmitHandler<FieldValues> = async(data) => {
     const {email, password} = data
     try {
       const res = await login({email, name, password})
