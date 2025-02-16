@@ -17,8 +17,10 @@ import { register } from "@/services/AuthService";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import NMImageUploader from "@/components/ui/core/NMImageUploader";
+import { useState } from "react";
 
 const CreateShopForm = () => {
+  const [imageFiles, setImageFiles] = useState<File[] | []>([])
   const form = useForm({
     // resolver:zodResolver(registerSchema)
   });
@@ -241,8 +243,8 @@ const CreateShopForm = () => {
     )}
     />
 
-    <div className="flex justify-center items-center">
-      <NMImageUploader/>
+    <div className="flex justify-center items-center md:col-span-1 col-span-2">
+      <NMImageUploader imageFiles ={imageFiles} setImageFiles={setImageFiles}/>
     </div>
     
     </div>
