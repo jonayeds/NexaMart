@@ -25,7 +25,7 @@ const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "https://t3.ftcdn.net/jpg/09/39/45/88/240_F_939458818_jVOdxa4lg5rlOUwIurL0zZBl19pJCV9m.jpg",
   },
   navMain: [
     {
