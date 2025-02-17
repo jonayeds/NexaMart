@@ -1,6 +1,8 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import NMImageUploader from "@/components/ui/core/NMImageUploader"
+import ImagePreviewer from "@/components/ui/core/NMImageUploader/ImagePreviewer"
 import {
   Dialog,
   DialogContent,
@@ -12,6 +14,8 @@ import {
 } from "@/components/ui/dialog"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { createCategory } from "@/services/Category/createCategory"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
@@ -19,9 +23,11 @@ import { toast } from "sonner"
 
 
 const CreateCategorymodal = () => {
+    const [imageFiles, setImageFiles] = useState<File[] | []>([])
+  const [imagePreview, setImagePreview] = useState<string[]|[]>([])
     const form = useForm();
-      const password = form.watch("password")
-      const email = form.watch("email")
+      const password = form.watch("description")
+      const email = form.watch("name")
       const searchParams = useSearchParams()
       const redirect = searchParams.get('redirectPath')
       const router = useRouter()
@@ -31,21 +37,23 @@ const CreateCategorymodal = () => {
     
       const onSubmit:SubmitHandler<FieldValues> = async(data) => {
         console.log(data)
-        // try {
-        //   const res = await 
-        //   if(res?.success){
-        //     toast.success(res?.message)
-        //     if(redirect){
-        //       router.push(redirect)
-        //     }else{
-        //       router.push("/profile")
-        //     }
-        //   }else{
-        //     toast.error(res?.message)
-        //   }
-        // } catch (error) {
-        //   console.log(error)
-        // }
+        try {
+            const formData = new FormData()
+            formData.append("data", JSON.stringify(data))
+            formData.append("icon", JSON.stringify(imageFiles[0]))
+          const res = await createCategory(formData)
+          console.log(res)
+          if(res?.success){
+            toast.success(res?.message)
+            if(redirect){
+              router.push(redirect)
+            }
+          }else{
+            toast.error(res?.errorSources[0]?.message)
+          }
+        } catch (error) {
+          console.log(error)
+        }
     
       };
   return (
@@ -60,14 +68,14 @@ const CreateCategorymodal = () => {
       <Form {...form}>
         <form className="space-y-4 mt-8 " onSubmit={form.handleSubmit(onSubmit)}>
         
-  {/* Email */}
+  {/* name */}
         <FormField
     control={form.control}
-    name="email"
+    name="name"
     render={({field}) => (
       <FormItem>
         <div className="flex items-center justify-between">
-        <FormLabel  >Email</FormLabel>
+        <FormLabel  >Name</FormLabel>
         <FormMessage  className="text-xs" />
         </div> 
         <FormControl>
@@ -77,25 +85,38 @@ const CreateCategorymodal = () => {
       </FormItem>
     )}
   />
+<div className="flex gap-2 items-center">
 
-  {/* Password */}
+  {/* Description */}
         <FormField
     control={form.control}
-    name="password"
+    name="description"
     render={({field}) => (
-      <FormItem>
-        <div className="flex items-center justify-between">
-        <FormLabel  >Password</FormLabel>
+        <FormItem className="w-full">
+        <div className="flex items-center justify-between ">
+        <FormLabel  >Description</FormLabel>
         <FormMessage className="text-xs"  />
         </div>
         <FormControl>
-            <Input {...field} type="password" value={field.value || ""}/>
+            <Textarea className="h-8 bg-white " {...field}  value={field.value || ""}/>
         </FormControl>
       </FormItem>
     )}
-  />
+    />
 
-  <Button disabled={ !(email && password)  } className="w-full" type="submit">{isSubmitting? "Logging In...":"Login"}</Button>
+<div className="flex justify-center items-center   duration-300">
+      {
+          imagePreview.length>0? 
+          <ImagePreviewer imagePreview={imagePreview} setImageFiles={setImageFiles} setImagePreview={setImagePreview} className=" " />
+          :
+          <NMImageUploader lebel="Upload Icon"  setImagePreview={setImagePreview} imageFiles ={imageFiles} setImageFiles={setImageFiles}/> 
+        }
+      
+       
+    </div>
+        </div>
+
+  <Button disabled={ !(email && password)  } className="w-full" type="submit">{isSubmitting? "Creating...":"Create"}</Button>
         </form>
       </Form>
 
