@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import CreateCategorymodal from "./CreateCategorymodal";
 
 const ManageCategories = () => {
