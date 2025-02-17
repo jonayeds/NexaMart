@@ -18,7 +18,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { protectedRoutes } from "@/constants";
 
 export default function Navbar() {
-  const {user, isLoading, setIsLoading} = useUser()
+  const {user, setIsLoading} = useUser()
   const pathname = usePathname()
   const router = useRouter()
   const handleLogout =()=>{
