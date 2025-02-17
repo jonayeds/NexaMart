@@ -19,6 +19,8 @@ import { login, recaptchaTokenValrification } from "@/services/AuthService";
 import { toast } from "sonner";
 import { loginSchema } from "./loginValidation";
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
 
 const LoginForm = () => {
   const form = useForm({
@@ -26,6 +28,9 @@ const LoginForm = () => {
   });
   const password = form.watch("password")
   const email = form.watch("email")
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirectPath')
+  const router = useRouter()
 
   const  {formState:{isSubmitting}} = form
 
@@ -48,6 +53,11 @@ const LoginForm = () => {
       const res = await login({email, name, password})
       if(res?.success){
         toast.success(res?.message)
+        if(redirect){
+          router.push(redirect)
+        }else{
+          router.push("/profile")
+        }
       }else{
         toast.error(res?.message)
       }
