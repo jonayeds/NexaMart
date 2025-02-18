@@ -15,7 +15,7 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { createCategory } from "@/services/Category/createCategory"
+import { createCategory } from "@/services/Category"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
@@ -36,11 +36,10 @@ const CreateCategorymodal = () => {
     
     
       const onSubmit:SubmitHandler<FieldValues> = async(data) => {
-        console.log(data)
         try {
             const formData = new FormData()
             formData.append("data", JSON.stringify(data))
-            formData.append("icon", JSON.stringify(imageFiles[0]))
+            formData.append("icon", imageFiles[0])
           const res = await createCategory(formData)
           console.log(res)
           if(res?.success){

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { createBrand } from "@/services/Brand/createBrand"
+import { createBrand } from "@/services/Brand"
 
 import { useState } from "react"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
