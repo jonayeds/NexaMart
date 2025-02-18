@@ -32,11 +32,11 @@ export function NMTable<TData, TValue>({
   })
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border mt-8">
       <Table>
-        <TableHeader>
+        <TableHeader >
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow key={headerGroup.id} className="bg-gray-100 ">
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead key={header.id}>
