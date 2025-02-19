@@ -8,7 +8,6 @@ import { Trash2 } from "lucide-react";
 import { deleteACategory } from "@/services/Category";
 import { toast } from "sonner";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 
 type TCategoriesProps = {
   categories: ICategory[];

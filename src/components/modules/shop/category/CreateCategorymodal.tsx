@@ -5,6 +5,7 @@ import NMImageUploader from "@/components/ui/core/NMImageUploader"
 import ImagePreviewer from "@/components/ui/core/NMImageUploader/ImagePreviewer"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -17,7 +18,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { createCategory } from "@/services/Category"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
+import {  useState } from "react"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -32,10 +33,13 @@ const CreateCategorymodal = () => {
       const redirect = searchParams.get('redirectPath')
       const router = useRouter()
     
-      const  {formState:{isSubmitting}} = form
+      
+      
     
     
       const onSubmit:SubmitHandler<FieldValues> = async(data) => {
+        
+        const  toastId = toast.loading("Creating Category...")
         try {
             const formData = new FormData()
             formData.append("data", JSON.stringify(data))
@@ -43,12 +47,12 @@ const CreateCategorymodal = () => {
           const res = await createCategory(formData)
           console.log(res)
           if(res?.success){
-            toast.success(res?.message)
+            toast.success(res?.message, {id:toastId})
             if(redirect){
               router.push(redirect)
             }
           }else{
-            toast.error(res?.errorSources[0]?.message)
+            toast.error(res?.errorSources[0]?.message, {id:toastId})
           }
         } catch (error) {
           console.log(error)
@@ -115,7 +119,7 @@ const CreateCategorymodal = () => {
     </div>
         </div>
 
-  <Button disabled={ !(email && password)  } className="w-full" type="submit">{isSubmitting? "Creating...":"Create"}</Button>
+  <DialogClose disabled={ !(email && password)  } className="w-full py-3 bg-primary text-white rounded-xl" type="submit">Create</DialogClose>
         </form>
       </Form>
 
