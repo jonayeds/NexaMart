@@ -19,7 +19,7 @@ const ImagePreviewer = ({setImageFiles,setImagePreview,imagePreview,className}:T
     <div className={className}>
         {
                 imagePreview.map((preview,idx)=>(
-                    <div key={idx} className="relative overflow-hidden w-28 h-28 border-dashed border-gray-400 border-2 rounded-md">
+                    <div key={idx} className={`lg:relative overflow-hidden w-28 h-28 border-dashed border-gray-400 border-2 rounded-md absolute  left-${idx*8} lg:left-0 ${(idx ===4) && ' left-32 '}  `}>
 
                     <Image src={preview}  width={500} height={500} alt='images' className="min-h-full min-w-fulls h-maxs w-maxs" />
                     <Button onClick={()=>handelRemove(idx)} className="bg-red-300 hover:bg-red-500 absolute top-0 right-0 w-5 h-5 rounded-full"><X className="w-3 h-3"/></Button>

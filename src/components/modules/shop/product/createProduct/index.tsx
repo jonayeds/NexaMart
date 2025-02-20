@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 // import { zodResolver } from "@hookform/resolvers/zod";
 // import Link from "next/link";
-import { FieldValues,  SubmitHandler,  useForm } from "react-hook-form";
+import { FieldValues,  SubmitHandler,  useFieldArray,  useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import NMImageUploader from "@/components/ui/core/NMImageUploader";
@@ -20,21 +20,43 @@ import { useState } from "react";
 import ImagePreviewer from "@/components/ui/core/NMImageUploader/ImagePreviewer";
 import { createShop } from "@/services/Shop";
 import { Separator } from "@/components/ui/separator";
+import { Plus } from "lucide-react";
 
 const AddProductForm = () => {
   const [imageFiles, setImageFiles] = useState<File[] | []>([])
   const [imagePreview, setImagePreview] = useState<string[]|[]>([])
   const form = useForm({
-    // resolver:zodResolver(registerSchema)
+    defaultValues:{
+      name:"",
+      description:"",
+      category:"",
+      brand:"",
+      price:"",
+      stock:"",
+      weight:"",
+      availableColors:[{value:""}],
+      keyFeatures:[{value:""}],
+      specification:""
+    }
   });
   const  {formState:{isSubmitting}} = form
+  // to dynamically control a field of the form 
+  const {append:appentKeyFeatures, fields:featureFields}  = useFieldArray({
+    control:form.control, //--> which form we want to connect
+    name: "keyFeatures" //--> which field we want to make dynamic
+  })
+
+  const addFeatures =()=>{
+    appentKeyFeatures({value:""})
+    console.log(featureFields)
+  }
+
   const onSubmit:SubmitHandler<FieldValues> = async(data) => {
     const servicesOffered = data?.servicesOffered?.split(",").map((service: string) => service.trim()).filter((service:string) => service !== "")
     const modifiedData = {
       ...data,
        servicesOffered,
        establishedYear: Number(data?.establishedYear),
-
      }
     try {
       const formData = new FormData()
@@ -197,13 +219,12 @@ const AddProductForm = () => {
         <Separator className=" my-4 border-gray-300 rounded-full border-2 col-span-4"  />
 <h1 className="text-primary text-lg">Images</h1>
 <Separator className=" my-4 border-gray-300 rounded-full border-2 col-span-4"  />
-<div className="flex justify-start items-center col-span-4  duration-300">
-      {
-        imagePreview.length>0? 
-        <ImagePreviewer imagePreview={imagePreview} setImageFiles={setImageFiles} setImagePreview={setImagePreview} className=" " />
-        :
+<div className="flex justify-start gap-4 items-center col-span-4  duration-300 ">
+      
         <NMImageUploader lebel="Upload Image"  setImagePreview={setImagePreview} imageFiles ={imageFiles} setImageFiles={setImageFiles} className="text-xs"/> 
-      }
+        <ImagePreviewer imagePreview={imagePreview} setImageFiles={setImageFiles} setImagePreview={setImagePreview} className="flex gap-2 items-center relative " />
+        
+     
       
        
     </div>
@@ -211,15 +232,21 @@ const AddProductForm = () => {
     <Separator className=" my-4 border-gray-300 rounded-full border-2 col-span-4"  />
 
 
-
+    <Separator className=" my-4 border-gray-300 rounded-full border-2 col-span-4"  />
+    <div className="flex justify-between  col-span-4">
+<h1 className="text-primary text-lg">Available Colors</h1>
+<Button variant={"ghost"} className="bg-gray-100"><Plus/></Button>
+    </div>
+<Separator className=" my-4 border-gray-300 rounded-full border-2 col-span-4"  />
   {/* Available Colors*/}
         <FormField
     control={form.control}
     name="availableColors"
     render={({field}) => (
-        <FormItem className="col-span-2">
+      <FormItem className="col-span-2">
         <div className="flex items-center justify-between">
-        <FormLabel  >Available Colors</FormLabel>
+        <FormLabel  >Color 1</FormLabel>
+        
         <FormMessage  className="text-xs" />
         </div>
         <FormControl>
@@ -229,12 +256,14 @@ const AddProductForm = () => {
     )}
     />
 
+    <Separator className=" my-4 border-gray-300 rounded-full border-2 col-span-4"  />
+
   {/* specification */}
         <FormField
     control={form.control}
     name="specification"
     render={({field}) => (
-        <FormItem className="col-span-2">
+        <FormItem className="col-span-4">
         <div className="flex items-center justify-between">
         <FormLabel  >Specification</FormLabel>
         <FormMessage  className="text-xs" />
@@ -245,16 +274,24 @@ const AddProductForm = () => {
       </FormItem>
     )}
     />
-
+    <Separator className=" my-4 border-gray-300 rounded-full border-2 col-span-4"  />
+    <div className="flex justify-between  col-span-4">
+<h1 className="text-primary text-lg">Key Features</h1>
+<Button type="button" onClick={addFeatures} variant={"ghost"} className="bg-gray-100"><Plus/></Button>
+    </div>
+<Separator className=" my-4 border-gray-300 rounded-full border-2 col-span-4"  />
 
   {/* keyFeatures */}
-        <FormField
+  {
+    featureFields.map((feature,idx)=>(
+      <FormField
+      key={idx}
     control={form.control}
-    name="keyFeatures"
+    name={`keyFeatures.${idx}.value`}
     render={({field}) => (
         <FormItem className="col-span-2">
         <div className="flex items-center justify-between">
-        <FormLabel  >Key Features</FormLabel>
+        <FormLabel  >Key Feature {idx+1}</FormLabel>
         <FormMessage  className="text-xs" />
         </div>
         <FormControl>
@@ -263,6 +300,9 @@ const AddProductForm = () => {
       </FormItem>
     )}
     />
+    ))
+  }
+
 
     
     
