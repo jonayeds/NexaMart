@@ -2,6 +2,15 @@
 import Logo from "@/app/assets/svgs/Logo";
 import { Button } from "@/components/ui/button";
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
   Form,
   FormControl,
   FormField,
@@ -16,15 +25,26 @@ import { FieldValues,  SubmitHandler,  useFieldArray,  useForm } from "react-hoo
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import NMImageUploader from "@/components/ui/core/NMImageUploader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImagePreviewer from "@/components/ui/core/NMImageUploader/ImagePreviewer";
-import { createShop } from "@/services/Shop";
 import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
+import { createProduct } from "@/services/Product";
+import { ICategory } from "@/types/category";
+import { getAllCategories } from "@/services/Category";
+import { getAllBrands } from "@/services/Brand";
+import { IBrand } from "@/types/brand";
+
+type TSpecification  = {
+  [key:string]:string
+}
+
 
 const AddProductForm = () => {
   const [imageFiles, setImageFiles] = useState<File[] | []>([])
   const [imagePreview, setImagePreview] = useState<string[]|[]>([])
+  const [categories, setCategories] = useState<ICategory[]>([])
+  const [brands, setBrands] = useState<IBrand[]>([])
   const form = useForm({
     defaultValues:{
       name:"",
@@ -36,9 +56,24 @@ const AddProductForm = () => {
       weight:"",
       availableColors:[{value:""}],
       keyFeatures:[{value:""}],
-      specification:""
+      specification:[{key:"", value:""}]
     }
   });
+
+  useEffect(()=>{
+    const pageData = async()=>{
+      const [{data:categoriesData}, {data:brandsData}] =  await Promise.all([
+        getAllCategories(),
+        getAllBrands()
+      ])
+      setCategories(categoriesData)
+      setBrands(brandsData)
+    }
+    pageData()
+  },[])
+
+
+
   const  {formState:{isSubmitting}} = form
   // to dynamically control a field of the form 
 
@@ -52,6 +87,16 @@ const AddProductForm = () => {
     name: "keyFeatures" //--> which field we want to make dynamic
   })
 
+  const {append:appendSpec, fields:specFields}  = useFieldArray({
+    control:form.control, //--> which form we want to connect
+    name: "specification" //--> which field we want to make dynamic
+  })
+
+  const addSpec = () =>{
+    appendSpec({key:"", value:""})
+  }
+
+
   const addFeatures =()=>{
     appendKeyFeatures({value:""})
   }
@@ -61,27 +106,32 @@ const AddProductForm = () => {
   }
 
   const onSubmit:SubmitHandler<FieldValues> = async(data) => {
-    const servicesOffered = data?.servicesOffered?.split(",").map((service: string) => service.trim()).filter((service:string) => service !== "")
+    const availableColors = data?.availableColors?.map(({value}: {value:string}) => value)
+    const keyFeatures = data?.keyFeatures?.map(({value}: {value:string}) => value)
+    const specification:TSpecification = {}
+  data.spefication?.forEach((item:{key:string, value:string}) => ( specification[item.key] = item.value))
     const modifiedData = {
       ...data,
-       servicesOffered,
-       establishedYear: Number(data?.establishedYear),
+      availableColors,
+      keyFeatures,
+      specification
      }
-    try {
-      const formData = new FormData()
-      formData.append("data",JSON.stringify(modifiedData))
-      formData.append("logo",JSON.stringify(imageFiles[0]))
-      const res = await createShop(formData)
-      console.log(res)
-      if(res?.success){
-        toast.success(res?.message)
-      }else{
-        toast.error(res?.message)
-      }
+     console.log(modifiedData)
+    // try {
+    //   const formData = new FormData()
+    //   formData.append("data",JSON.stringify(modifiedData))
+    //   formData.append("images",JSON.stringify(imageFiles[0]))
+    //   const res = await createProduct(formData)
+    //   console.log(res)
+    //   if(res?.success){
+    //     toast.success(res?.message)
+    //   }else{
+    //     toast.error(res?.message)
+    //   }
       
-    } catch (error) {
-      console.log(error)
-    }
+    // } catch (error) {
+    //   console.log(error)
+    // }
 
   };
   return (
@@ -183,7 +233,22 @@ const AddProductForm = () => {
         <FormMessage  className="text-xs" />
         </div>
         <FormControl>
-            <Input {...field} type="number" value={field.value || ""}/>
+            {/* <Input {...field} type="text" value={field.value || ""}/> */}
+            <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+      <SelectTrigger className=" bg-white w-full focus:ring-0 " >
+        <SelectValue placeholder="Select a Category" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {/* <SelectLabel>Categories</SelectLabel> */}
+          {
+            categories.map((item) =>(
+              <SelectItem key={item._id}  value={item._id}>{item.name}</SelectItem>
+            ))
+          } 
+        </SelectGroup>
+      </SelectContent>
+    </Select>
         </FormControl>
       </FormItem>
     )}
@@ -201,7 +266,21 @@ const AddProductForm = () => {
         <FormMessage  className="text-xs" />
         </div>
         <FormControl>
-            <Input {...field} type="text" value={field.value || ""}/>
+        <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+      <SelectTrigger className=" bg-white w-full focus:ring-0 " >
+        <SelectValue placeholder="Select a Category" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {/* <SelectLabel>Brands</SelectLabel> */}
+          {
+            brands.map((item) =>(
+              <SelectItem key={item._id}  value={item._id}>{item.name}</SelectItem>
+            ))
+          } 
+        </SelectGroup>
+      </SelectContent>
+    </Select>
         </FormControl>
       </FormItem>
     )}
@@ -271,16 +350,24 @@ const AddProductForm = () => {
   }
         
 
+  {/* specification */}
     <Separator className=" my-4 border-gray-300 rounded-full border-2 col-span-4"  />
 
-  {/* specification */}
+    <div className="flex justify-between  col-span-4">
+<h1 className="text-primary text-lg">Specifications</h1>
+<Button type="button" onClick={addSpec} variant={"ghost"} className="bg-gray-100"><Plus/></Button>
+    </div>
+<Separator className=" my-4 border-gray-300 rounded-full border-2 col-span-4"  />
+{
+  specFields.map((spec,idx)=>(
+    <div key={idx} className="col-span-4 grid grid-cols-2 gap-4 my-2">
         <FormField
     control={form.control}
-    name="specification"
+    name={`specification.${idx}.key`}
     render={({field}) => (
-        <FormItem className="col-span-4">
+        <FormItem className="">
         <div className="flex items-center justify-between">
-        <FormLabel  >Specification</FormLabel>
+        <FormLabel  >Feature Name {idx+1}</FormLabel>
         <FormMessage  className="text-xs" />
         </div>
         <FormControl>
@@ -289,6 +376,26 @@ const AddProductForm = () => {
       </FormItem>
     )}
     />
+        <FormField
+    control={form.control}
+    name={`specification.${idx}.value`}
+    render={({field}) => (
+        <FormItem className="">
+        <div className="flex items-center justify-between">
+        <FormLabel  >Feature Description {idx+1}</FormLabel>
+        <FormMessage  className="text-xs" />
+        </div>
+        <FormControl>
+            <Input {...field} type="text" value={field.value || ""}/>
+        </FormControl>
+      </FormItem>
+    )}
+    />
+    </div>
+  ))
+}
+
+      
     <Separator className=" my-4 border-gray-300 rounded-full border-2 col-span-4"  />
     <div className="flex justify-between  col-span-4">
 <h1 className="text-primary text-lg">Key Features</h1>
