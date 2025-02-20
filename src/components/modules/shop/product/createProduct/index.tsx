@@ -33,17 +33,18 @@ import { ICategory } from "@/types/category";
 import { getAllCategories } from "@/services/Category";
 import { getAllBrands } from "@/services/Brand";
 import { IBrand } from "@/types/brand";
+import { useRouter } from "next/navigation";
 
 type TSpecification  = {
   [key:string]:string
 }
-
 
 const AddProductForm = () => {
   const [imageFiles, setImageFiles] = useState<File[] | []>([])
   const [imagePreview, setImagePreview] = useState<string[]|[]>([])
   const [categories, setCategories] = useState<ICategory[]>([])
   const [brands, setBrands] = useState<IBrand[]>([])
+  const router = useRouter()
   const form = useForm({
     defaultValues:{
       name:"",
@@ -118,7 +119,6 @@ const AddProductForm = () => {
         weight:parseFloat(data?.weight),
         price:parseFloat(data?.price),
         stock:parseInt(data?.stock)
-
        }
       const formData = new FormData()
       formData.append("data",JSON.stringify(modifiedData))
@@ -129,6 +129,7 @@ const AddProductForm = () => {
       console.log(res)
       if(res?.success){
         toast.success(res?.message)
+        router.push("/user/shop/products")
       }else{
         toast.error(res?.message)
       }

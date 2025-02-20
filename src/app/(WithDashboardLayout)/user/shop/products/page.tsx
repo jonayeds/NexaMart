@@ -5,7 +5,7 @@ const ProductsPage = async() => {
     const {data} = await getAllProducts()
   return (
     <div>
-        <ManageProducts categories={data}/>
+        <ManageProducts products={data}/>
     </div>
   )
 }

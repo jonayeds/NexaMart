@@ -35,7 +35,7 @@ export function NMTable<TData, TValue>({
     <div className="rounded-md border mt-8">
       <Table>
         <TableHeader >
-          {table.getHeaderGroups().map((headerGroup) => (
+          {table?.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="bg-gray-100 ">
               {headerGroup.headers.map((header) => {
                 return (
@@ -53,8 +53,8 @@ export function NMTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+          {table?.getRowModel()?.rows?.length ? (
+            table?.getRowModel()?.rows?.map((row) => (
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}

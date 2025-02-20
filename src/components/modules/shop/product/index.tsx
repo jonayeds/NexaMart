@@ -1,5 +1,5 @@
 "use client";
-import { ICategory } from "@/types/category";
+
 
 import { NMTable } from "@/components/ui/core/NMTable";
 import { ColumnDef } from "@tanstack/react-table";
@@ -9,20 +9,21 @@ import { toast } from "sonner";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Link from "next/link";
 import { deleteAProduct } from "@/services/Product";
+import { IProduct } from "@/types/product";
 
-type TCategoriesProps = {
-  categories: ICategory[];
+type TProductsProps = {
+  products: IProduct[];
 };
 
-const ManageProducts = ({ categories }: TCategoriesProps) => {
-  const columns: ColumnDef<ICategory>[] = [
+const ManageProducts = ({ products }: TProductsProps) => {
+  const columns: ColumnDef<IProduct>[] = [
     {
       accessorKey: "name",
       header: () => <div>Category Name</div>,
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <Image
-            src={row.original?.icon}
+            src={row.original?.imageUrls[0]}
             alt={row.original?.name}
             width={40}
             height={40}
@@ -33,16 +34,38 @@ const ManageProducts = ({ categories }: TCategoriesProps) => {
       ),
     },
     {
-      accessorKey: "isActive",
-      header: () => <div>isActive</div>,
+      accessorKey: "category",
+      header: () => <div>Category</div>,
       cell: ({ row }) => (
-        <div
-          className={`${
-            row.original.isActive ? "bg-green-400" : "bg-red-400"
-          } rounded-full  w-max px-4 py-1 `}
-        >
-          <span>{`${row.original.isActive}`}</span>
-        </div>
+          <span>{`${row.original.category.name}`}</span>
+      ),
+    },
+    {
+      accessorKey: "brand",
+      header: () => <div>Brand</div>,
+      cell: ({ row }) => (
+          <span>{`${row.original.brand.name}`}</span>
+      ),
+    },
+    {
+      accessorKey: "stock",
+      header: () => <div>Stock</div>,
+      cell: ({ row }) => (
+          <span>{`${row.original.stock}`}</span>
+      ),
+    },
+    {
+      accessorKey: "price",
+      header: () => <div>Price</div>,
+      cell: ({ row }) => (
+          <span>{`${row.original.price}`}</span>
+      ),
+    },
+    {
+      accessorKey: "offerPrice",
+      header: () => <div>Offer Price</div>,
+      cell: ({ row }) => (
+          <span>{`${row.original.offerPrice}`}</span>
       ),
     },
     {
@@ -50,7 +73,7 @@ const ManageProducts = ({ categories }: TCategoriesProps) => {
       header: "Action",
       cell: ({ row }) => (
         <div className="flex items-center justify-start">
-          <Dialog>
+          {/* <Dialog>
             <DialogTrigger asChild>
               <Trash2
                 className="text-red-500 cursor-pointer"
@@ -69,13 +92,13 @@ const ManageProducts = ({ categories }: TCategoriesProps) => {
                  className="bg-red-500 text-white px-4 py-2 rounded-xl">Confirm</DialogClose>
               </DialogFooter>
             </DialogContent>
-          </Dialog>
+          </Dialog> */}
         </div>
       ),
     },
   ];
 
-  const handleDeleteRow = async (rowId: string) => {
+  const handleDeleteRow = async (rowId: string) => {  
     const res = await deleteAProduct(rowId);
     console.log(res);
     if (res?.success) {
@@ -89,7 +112,7 @@ const ManageProducts = ({ categories }: TCategoriesProps) => {
         <h1 className="text-[4vw] md:text-[2vw]  ">Manage Products</h1>
         <Link href={"/user/shop/products/add-product"} className="bg-primary px-4 py-3 rounded-xl items-center text-white gap-2 flex ">Create Product <Plus/></Link>
       </div>
-      <NMTable data={categories} columns={columns} />
+      <NMTable data={products} columns={columns} />
     </div>
   );
 };
