@@ -41,14 +41,23 @@ const AddProductForm = () => {
   });
   const  {formState:{isSubmitting}} = form
   // to dynamically control a field of the form 
-  const {append:appentKeyFeatures, fields:featureFields}  = useFieldArray({
+
+  const {append:appendAvailableColors, fields:colorFields} = useFieldArray({
+    control:form.control,
+    name:"availableColors"
+  })
+
+  const {append:appendKeyFeatures, fields:featureFields}  = useFieldArray({
     control:form.control, //--> which form we want to connect
     name: "keyFeatures" //--> which field we want to make dynamic
   })
 
   const addFeatures =()=>{
-    appentKeyFeatures({value:""})
-    console.log(featureFields)
+    appendKeyFeatures({value:""})
+  }
+
+  const addColor =()=>{
+    appendAvailableColors({value:""})
   }
 
   const onSubmit:SubmitHandler<FieldValues> = async(data) => {
@@ -235,17 +244,20 @@ const AddProductForm = () => {
     <Separator className=" my-4 border-gray-300 rounded-full border-2 col-span-4"  />
     <div className="flex justify-between  col-span-4">
 <h1 className="text-primary text-lg">Available Colors</h1>
-<Button variant={"ghost"} className="bg-gray-100"><Plus/></Button>
+<Button onClick={addColor} type="button" variant={"ghost"} className="bg-gray-100"><Plus/></Button>
     </div>
 <Separator className=" my-4 border-gray-300 rounded-full border-2 col-span-4"  />
   {/* Available Colors*/}
-        <FormField
+  {
+    colorFields.map((color,idx)=>(
+      <FormField
+      key={idx}
     control={form.control}
-    name="availableColors"
+    name={`availableColors.${idx}.value`}
     render={({field}) => (
       <FormItem className="col-span-2">
         <div className="flex items-center justify-between">
-        <FormLabel  >Color 1</FormLabel>
+        <FormLabel  >Color {idx+1}</FormLabel>
         
         <FormMessage  className="text-xs" />
         </div>
@@ -255,6 +267,9 @@ const AddProductForm = () => {
       </FormItem>
     )}
     />
+    ))
+  }
+        
 
     <Separator className=" my-4 border-gray-300 rounded-full border-2 col-span-4"  />
 
