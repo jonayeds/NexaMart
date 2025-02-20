@@ -6,7 +6,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -110,28 +109,33 @@ const AddProductForm = () => {
     const keyFeatures = data?.keyFeatures?.map(({value}: {value:string}) => value)
     const specification:TSpecification = {}
   data.spefication?.forEach((item:{key:string, value:string}) => ( specification[item.key] = item.value))
-    const modifiedData = {
-      ...data,
-      availableColors,
-      keyFeatures,
-      specification
-     }
-     console.log(modifiedData)
-    // try {
-    //   const formData = new FormData()
-    //   formData.append("data",JSON.stringify(modifiedData))
-    //   formData.append("images",JSON.stringify(imageFiles[0]))
-    //   const res = await createProduct(formData)
-    //   console.log(res)
-    //   if(res?.success){
-    //     toast.success(res?.message)
-    //   }else{
-    //     toast.error(res?.message)
-    //   }
+  try {
+      const modifiedData = {
+        ...data,
+        availableColors,
+        keyFeatures,
+        specification,
+        weight:parseFloat(data?.weight),
+        price:parseFloat(data?.price),
+        stock:parseInt(data?.stock)
+
+       }
+      const formData = new FormData()
+      formData.append("data",JSON.stringify(modifiedData))
+      for(const image of imageFiles){
+        formData.append("images",image)
+      }
+      const res = await createProduct(formData)
+      console.log(res)
+      if(res?.success){
+        toast.success(res?.message)
+      }else{
+        toast.error(res?.message)
+      }
       
-    // } catch (error) {
-    //   console.log(error)
-    // }
+    } catch (error) {
+      console.log(error)
+    }
 
   };
   return (
@@ -240,7 +244,6 @@ const AddProductForm = () => {
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          {/* <SelectLabel>Categories</SelectLabel> */}
           {
             categories.map((item) =>(
               <SelectItem key={item._id}  value={item._id}>{item.name}</SelectItem>
@@ -272,7 +275,6 @@ const AddProductForm = () => {
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          {/* <SelectLabel>Brands</SelectLabel> */}
           {
             brands.map((item) =>(
               <SelectItem key={item._id}  value={item._id}>{item.name}</SelectItem>
