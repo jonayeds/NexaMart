@@ -4,12 +4,13 @@
 import { NMTable } from "@/components/ui/core/NMTable";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
-import { Plus, Trash2 } from "lucide-react";
+import { Edit, Eye, Plus} from "lucide-react";
 import { toast } from "sonner";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
 import Link from "next/link";
 import { deleteAProduct } from "@/services/Product";
 import { IProduct } from "@/types/product";
+import PermissionDialog from "@/components/shared/PermissionDialog";
 
 type TProductsProps = {
   products: IProduct[];
@@ -72,27 +73,12 @@ const ManageProducts = ({ products }: TProductsProps) => {
       accessorKey: "action",
       header: "Action",
       cell: ({ row }) => (
-        <div className="flex items-center justify-start">
-          {/* <Dialog>
-            <DialogTrigger asChild>
-              <Trash2
-                className="text-red-500 cursor-pointer"
-              />
-            </DialogTrigger>
-            <DialogContent>
-              <DialogTitle>Delete Item</DialogTitle>
-              <DialogDescription>Are you sure to delete <span className="text-red-500 font-semibold">{row.original.name}</span>? This action cannot be undone.</DialogDescription>
-              <DialogFooter className="flex justify-end gap-4">
-                <DialogClose className="px-4 hover:bg-white focus:ring-0 rounded-xl duration-200">
-                  Cancel
-                </DialogClose>
-                
-                <DialogClose
-                onClick={() => handleDeleteRow(row.original._id)}
-                 className="bg-red-500 text-white px-4 py-2 rounded-xl">Confirm</DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog> */}
+        <div className="flex items-center gap-2  justify-start">
+          <Link href={`/user/shop/products/product`}><Eye /></Link>
+          <Link href={`/user/shop/products/update-product/${row.original._id}`}><Edit /></Link>
+
+          <PermissionDialog handler={handleDeleteRow} id={row.original._id} name={row.original.name} type="delete" />
+          
         </div>
       ),
     },

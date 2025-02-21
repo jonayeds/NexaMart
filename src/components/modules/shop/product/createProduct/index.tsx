@@ -109,36 +109,40 @@ const AddProductForm = () => {
     const availableColors = data?.availableColors?.map(({value}: {value:string}) => value)
     const keyFeatures = data?.keyFeatures?.map(({value}: {value:string}) => value)
     const specification:TSpecification = {}
-  data.spefication?.forEach((item:{key:string, value:string}) => ( specification[item.key] = item.value))
-  try {
-      const modifiedData = {
-        ...data,
-        availableColors,
-        keyFeatures,
-        specification,
-        weight:parseFloat(data?.weight),
-        price:parseFloat(data?.price),
-        stock:parseInt(data?.stock)
-       }
-      const formData = new FormData()
-      formData.append("data",JSON.stringify(modifiedData))
-      for(const image of imageFiles){
-        formData.append("images",image)
-      }
-      const res = await createProduct(formData)
-      console.log(res)
-      if(res?.success){
-        toast.success(res?.message)
-        router.push("/user/shop/products")
-      }else{
-        toast.error(res?.message)
-      }
-      
-    } catch (error) {
-      console.log(error)
-    }
+  data.specification?.forEach((item:{key:string, value:string}) =>  {
+    specification[item.key] = item.value
+  })
+  console.log(keyFeatures)
 
-  };
+  // try {
+  //     const modifiedData = {
+  //       ...data,
+  //       availableColors,
+  //       keyFeatures,
+  //       specification,
+  //       weight:parseFloat(data?.weight),
+  //       price:parseFloat(data?.price),
+  //       stock:parseInt(data?.stock)
+  //      }
+  //     const formData = new FormData()
+  //     formData.append("data",JSON.stringify(modifiedData))
+  //     for(const image of imageFiles){
+  //       formData.append("images",image)
+  //     }
+  //     const res = await createProduct(formData)
+  //     console.log(res)
+  //     if(res?.success){
+  //       toast.success(res?.message)
+  //       router.push("/user/shop/products")
+  //     }else{
+  //       toast.error(res?.message)
+  //     }
+      
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+
+  // };
   return (
     <div className="max-w-[70vw] mx-auto border-2 border-gray-400 p-8 my-16 rounded-xl">
         <div className="flex items-center gap-2 justify-start">
@@ -441,31 +445,7 @@ const AddProductForm = () => {
   );
 };
 
+}
 export default AddProductForm;
 
 
-
-// {
-//     "name": "Lenovo XPS 15 Laptop", ---
-//     "description": "The Lenovo XPS 13 is a high-performance laptop with a sleek design, perfect for work and play.",
-//     "price": 120455, --
-//     "stock": 50,
-//     "weight": 1.24,
-//     "category": "6784da8ff8bb3af04cb26dcb", 
-//     "brand": "6784db1031af13750ec95aaa",
-//     "availableColors": [
-//       "Silver",
-//       "Black"
-//     ],
-//     "specification": {
-//       "processor": "Intel Core i7",
-//       "ram": "16GB",
-//       "storage": "512GB SSD",
-//       "display": "13.3 inch FHD"
-//     },
-//     "keyFeatures": [
-//       "Long battery life",
-//       "Slim and lightweight",
-//       "Fast performance"
-//     ]
-//   }

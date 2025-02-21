@@ -24,4 +24,5 @@ export interface IProduct {
     updatedAt:string;
     weight:number;
     _id:string;
+    specification:{[key:string]: string}[]
 }

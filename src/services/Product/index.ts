@@ -45,7 +45,7 @@ export const  getAllProducts = async()=>{
 
 export const deleteAProduct = async(id:string)=>{
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/category/${id}`,{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/product/${id}`,{
             method:"DELETE",
             headers:{
                 Authorization: (await cookies()).get("accessToken")!.value 
@@ -57,4 +57,16 @@ export const deleteAProduct = async(id:string)=>{
     } catch (error) {
         console.log(error)
     }
+}
+
+
+export const getASingleProduct = async(id:string)=>{
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/product/${id}`)
+        const data = await res.json()
+        return data
+    } catch (error) {
+        console.log(error)
+    }
+
 }
