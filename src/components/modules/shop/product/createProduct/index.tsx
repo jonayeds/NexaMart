@@ -112,37 +112,36 @@ const AddProductForm = () => {
   data.specification?.forEach((item:{key:string, value:string}) =>  {
     specification[item.key] = item.value
   })
-  console.log(keyFeatures)
 
-  // try {
-  //     const modifiedData = {
-  //       ...data,
-  //       availableColors,
-  //       keyFeatures,
-  //       specification,
-  //       weight:parseFloat(data?.weight),
-  //       price:parseFloat(data?.price),
-  //       stock:parseInt(data?.stock)
-  //      }
-  //     const formData = new FormData()
-  //     formData.append("data",JSON.stringify(modifiedData))
-  //     for(const image of imageFiles){
-  //       formData.append("images",image)
-  //     }
-  //     const res = await createProduct(formData)
-  //     console.log(res)
-  //     if(res?.success){
-  //       toast.success(res?.message)
-  //       router.push("/user/shop/products")
-  //     }else{
-  //       toast.error(res?.message)
-  //     }
+  try {
+      const modifiedData = {
+        ...data,
+        availableColors,
+        keyFeatures,
+        specification,
+        weight:parseFloat(data?.weight),
+        price:parseFloat(data?.price),
+        stock:parseInt(data?.stock)
+       }
+      const formData = new FormData()
+      formData.append("data",JSON.stringify(modifiedData))
+      for(const image of imageFiles){
+        formData.append("images",image)
+      }
+      const res = await createProduct(formData)
+      console.log(res)
+      if(res?.success){
+        toast.success(res?.message)
+        router.push("/user/shop/products")
+      }else{
+        toast.error(res?.message)
+      }
       
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
+    } catch (error) {
+      console.log(error)
+    }
 
-  // };
+  };
   return (
     <div className="max-w-[70vw] mx-auto border-2 border-gray-400 p-8 my-16 rounded-xl">
         <div className="flex items-center gap-2 justify-start">
@@ -444,8 +443,6 @@ const AddProductForm = () => {
     </div>
   );
 };
-
-}
 export default AddProductForm;
 
 

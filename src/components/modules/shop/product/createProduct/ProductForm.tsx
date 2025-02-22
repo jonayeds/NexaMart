@@ -42,16 +42,14 @@ type TSpecification  = {
 
 
 const ProductForm = ({product}:{product:IProduct}) => {
-
-  console.log(product)
   const [imageFiles, setImageFiles] = useState<File[] | []>([])
     const [imagePreview, setImagePreview] = useState<string[]|[]>([])
     const [categories, setCategories] = useState<ICategory[]>([])
     const [brands, setBrands] = useState<IBrand[]>([])
     const availableColors  = product.availableColors.map((item)=> ({value:item}))
     const keyFeatures  = product.keyFeatures.map((item)=> ({value:item}))
-    const specification = product.specification?.map(item=> ({key:Object.keys(item)[0], value:Object.keys(item)[1]}))
-    console.log(keyFeatures)
+    const specification = Object.entries(product?.specification || {}).map(([key,value])=>({key, value:value as unknown as string}))
+    console.log(specification)
     const router = useRouter()
     const form = useForm({
       defaultValues:{
@@ -62,9 +60,9 @@ const ProductForm = ({product}:{product:IProduct}) => {
         price:product.price || "",
         stock:product.stock || "",
         weight:product.weight || "",
-        availableColors:[  availableColors.length>0? availableColors :{value: ""}],
-        keyFeatures:[  keyFeatures.length>0? keyFeatures :{value: ""}],
-        specification:[{key:"", value:""}]
+        availableColors:  availableColors.length>0? availableColors : [{value: ""}],
+        keyFeatures: keyFeatures.length>0? [...keyFeatures] :[{value: ""}],
+        specification: specification ||[{key:"", value:""}]
       }
     });
   
