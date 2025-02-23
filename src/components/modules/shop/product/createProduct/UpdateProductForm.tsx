@@ -28,7 +28,7 @@ import { useEffect, useState } from "react";
 import ImagePreviewer from "@/components/ui/core/NMImageUploader/ImagePreviewer";
 import { Separator } from "@/components/ui/separator";
 import { Plus } from "lucide-react";
-import { createProduct } from "@/services/Product";
+import {  updateProduct } from "@/services/Product";
 import { ICategory } from "@/types/category";
 import { getAllCategories } from "@/services/Category";
 import { getAllBrands } from "@/services/Brand";
@@ -41,15 +41,16 @@ type TSpecification  = {
 }
 
 
-const ProductForm = ({product}:{product:IProduct}) => {
+const UpdateProductForm = ({product}:{product:IProduct}) => {
+  // console.log(product)
   const [imageFiles, setImageFiles] = useState<File[] | []>([])
-    const [imagePreview, setImagePreview] = useState<string[]|[]>([])
+    const [imagePreview, setImagePreview] = useState<string[]|[]>(product?.imageUrls || [])
     const [categories, setCategories] = useState<ICategory[]>([])
     const [brands, setBrands] = useState<IBrand[]>([])
     const availableColors  = product.availableColors.map((item)=> ({value:item}))
     const keyFeatures  = product.keyFeatures.map((item)=> ({value:item}))
     const specification = Object.entries(product?.specification || {}).map(([key,value])=>({key, value:value as unknown as string}))
-    console.log(specification)
+    // console.log(specification)
     const router = useRouter()
     const form = useForm({
       defaultValues:{
@@ -62,7 +63,7 @@ const ProductForm = ({product}:{product:IProduct}) => {
         weight:product.weight || "",
         availableColors:  availableColors.length>0? availableColors : [{value: ""}],
         keyFeatures: keyFeatures.length>0? [...keyFeatures] :[{value: ""}],
-        specification: specification ||[{key:"", value:""}]
+        specification: specification.length> 0? specification :[{key:"", value:""}]
       }
     });
   
@@ -115,7 +116,10 @@ const ProductForm = ({product}:{product:IProduct}) => {
       const availableColors = data?.availableColors?.map(({value}: {value:string}) => value)
       const keyFeatures = data?.keyFeatures?.map(({value}: {value:string}) => value)
       const specification:TSpecification = {}
-    data.spefication?.forEach((item:{key:string, value:string}) => ( specification[item.key] = item.value))
+    data.specification?.forEach((item:{key:string, value:string}) => {
+      specification[item.key] = item.value
+    })
+
     try {
         const modifiedData = {
           ...data,
@@ -131,7 +135,7 @@ const ProductForm = ({product}:{product:IProduct}) => {
         for(const image of imageFiles){
           formData.append("images",image)
         }
-        const res = await createProduct(formData)
+        const res = await updateProduct(product._id,formData)
         console.log(res)
         if(res?.success){
           toast.success(res?.message)
@@ -150,7 +154,7 @@ const ProductForm = ({product}:{product:IProduct}) => {
         <div className="flex items-center gap-2 justify-start">
             <Logo/>
             <div>
-                <h1 className="text-3xl font-semibold">Add Product</h1>
+                <h1 className="text-3xl font-semibold">Update {product.name}</h1>
             </div>
         </div>
         <Separator className=" my-8 border-gray-300 rounded-full border-2 col-span-4"  />
@@ -447,4 +451,4 @@ const ProductForm = ({product}:{product:IProduct}) => {
   )
 }
 
-export default ProductForm
+export default UpdateProductForm

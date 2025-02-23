@@ -1,5 +1,6 @@
 "use server"
 
+
 import { revalidateTag } from "next/cache"
 import { cookies } from "next/headers"
 
@@ -69,4 +70,19 @@ export const getASingleProduct = async(id:string)=>{
         console.log(error)
     }
 
+}
+
+export const updateProduct =async(id:string, data:FormData)=>{
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/product/${id}`,{
+            headers:{
+                Authorization: (await cookies()).get("accessToken")!.value
+            },
+            method:"PATCH",
+            body:data
+        })
+        return res.json()
+    } catch (error) {
+        console.log(error)
+    }
 }

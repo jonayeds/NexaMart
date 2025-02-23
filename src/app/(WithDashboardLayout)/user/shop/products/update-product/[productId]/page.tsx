@@ -1,4 +1,4 @@
-import ProductForm from "@/components/modules/shop/product/createProduct/ProductForm"
+import UpdateProductForm from "@/components/modules/shop/product/createProduct/UpdateProductForm"
 import { getASingleProduct } from "@/services/Product"
 
 const UpdateProductPage = async({params}:{params:Promise<{productId:string}>}) => {
@@ -6,7 +6,7 @@ const UpdateProductPage = async({params}:{params:Promise<{productId:string}>}) =
     const {data:productData} = await getASingleProduct(productId)
   return (
     <div>
-        <ProductForm product={productData}/>
+        <UpdateProductForm product={productData}/>
     </div>
   )
 }
