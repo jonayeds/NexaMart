@@ -1,0 +1,7 @@
+.banner{
+    background: url("../../../../assets/svgs/home-banner.png");
+    height: 500px;
+    background-size: cover;
+    background-position: right;
+    background-repeat: no-repeat;
+}

@@ -10,7 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import Logo from "@/app/assets/svgs/Logo"
+import Logo from "@/assets/svgs/Logo"
 
 export function NavHeader() {
 
