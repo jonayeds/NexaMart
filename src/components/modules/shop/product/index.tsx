@@ -11,13 +11,53 @@ import Link from "next/link";
 import { deleteAProduct } from "@/services/Product";
 import { IProduct } from "@/types/product";
 import PermissionDialog from "@/components/shared/PermissionDialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from "react";
 
 type TProductsProps = {
   products: IProduct[];
 };
 
 const ManageProducts = ({ products }: TProductsProps) => {
+  const [selectedIds, setSelectedIds] = useState<string[]>([]) 
+  console.log(selectedIds)
   const columns: ColumnDef<IProduct>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => {
+            if(value){
+              setSelectedIds(products.map(item => item._id))
+            }else{
+              setSelectedIds([])
+            }
+            table.toggleAllPageRowsSelected(!!value)
+          }}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => {
+            if(value){
+              setSelectedIds((prev)=> [...prev, row.original._id])
+            }else{
+              setSelectedIds((prev)=> prev.filter(p=> p !== row.original._id) )
+            }
+            row.toggleSelected(!!value)
+          }}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       accessorKey: "name",
       header: () => <div>Category Name</div>,

@@ -15,7 +15,7 @@ const TopBrandsSection = ({brands}:{brands:IBrand[]}) => {
             {
                 Array(8).fill(brands[0]).map((item:IBrand,idx)=>(
                     <div key={idx} className="p-4 bg-white rounded-xl ">
-                        <Image src={item.logo} alt={item.name} width={200} height={200} className="w-full"/>
+                        <Image src={item.logo} alt={item.name} width={100} height={100} className="w-full"/>
                     </div>
                 ))
             }
