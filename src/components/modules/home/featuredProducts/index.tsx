@@ -17,8 +17,8 @@ const FeaturedProducts = ({products}:{products:IProduct[]}) => {
                     {
                         Array(4).fill(products[0])?.map((item:IProduct,idx:number) =>(
                             <div key={idx} className=" border-[2px] border-white  rounded-lg p-4 space-y-4 bg-white">
-                                <Image src={item.imageUrls[0]} alt={item.name} width={100} height={100} className="w-full"/>
-                                <p className="mt-4 text-lg font-semibold">{item.name}</p>
+                                <Image src={item.imageUrls[0]} alt={item.name} width={100} height={100} className="w-full mb-4"/>
+                                <Link href={``} className=" text-lg font-semibold">{item.name}</Link>
                                 <div className="flex justify-between items-center">
                                 <p>Price: ${item.price}</p>
                                 <div className="flex items-center justify-between gap-2">
