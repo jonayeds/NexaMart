@@ -13,6 +13,7 @@ import { IProduct } from "@/types/product";
 import PermissionDialog from "@/components/shared/PermissionDialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
+import DiscountModal from "./DiscountModal";
 
 type TProductsProps = {
   products: IProduct[];
@@ -20,7 +21,6 @@ type TProductsProps = {
 
 const ManageProducts = ({ products }: TProductsProps) => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]) 
-  console.log(selectedIds)
   const columns: ColumnDef<IProduct>[] = [
     {
       id: "select",
@@ -136,7 +136,10 @@ const ManageProducts = ({ products }: TProductsProps) => {
     <div>
       <div className="flex  justify-between px-[4vw] items-center">
         <h1 className="text-[4vw] md:text-[2vw]  ">Manage Products</h1>
+        <div className="flex gap-4 items-center">
         <Link href={"/user/shop/products/add-product"} className="bg-primary px-4 py-3 rounded-xl items-center text-white gap-2 flex ">Create Product <Plus/></Link>
+        <DiscountModal selectedProducts={selectedIds}/>
+        </div>
       </div>
       <NMTable data={products} columns={columns} />
     </div>
