@@ -138,7 +138,7 @@ const ManageProducts = ({ products }: TProductsProps) => {
         <h1 className="text-[4vw] md:text-[2vw]  ">Manage Products</h1>
         <div className="flex gap-4 items-center">
         <Link href={"/user/shop/products/add-product"} className="bg-primary px-4 py-3 rounded-xl items-center text-white gap-2 flex ">Create Product <Plus/></Link>
-        <DiscountModal selectedProducts={selectedIds}/>
+        <DiscountModal setSelectedProducts={setSelectedIds} selectedProducts={selectedIds}/>
         </div>
       </div>
       <NMTable data={products} columns={columns} />

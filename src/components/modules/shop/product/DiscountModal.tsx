@@ -14,17 +14,17 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { addFlashSale } from "@/services/Product/flashSale"
+import { Dispatch, SetStateAction } from "react"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import { toast } from "sonner"
 
 
-const DiscountModal = ({selectedProducts}:{selectedProducts: string[]}) => {
+const DiscountModal = ({selectedProducts, setSelectedProducts}:{selectedProducts: string[], setSelectedProducts:Dispatch<SetStateAction<string[]>>}) => {
     const form = useForm();
       const percentage = form.watch("discountPercentage")
     
       const  {formState:{isSubmitting}} = form
-    
-    
+
       const onSubmit:SubmitHandler<FieldValues> = async(data) => {
             try {
               const modifiedData = {
@@ -32,7 +32,10 @@ const DiscountModal = ({selectedProducts}:{selectedProducts: string[]}) => {
                 products: selectedProducts
               }
                 const result = await addFlashSale(modifiedData)
-                console.log(result)
+                if(result?.success){
+                  toast.success(result.message)
+                  setSelectedProducts([])
+                }
             } catch (error) {
                 console.log(error)
             }
