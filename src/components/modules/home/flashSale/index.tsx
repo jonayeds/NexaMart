@@ -2,13 +2,14 @@ import { Button } from "@/components/ui/button"
 import { IProduct } from "@/types/product"
 import { Heart, ShoppingBasket, Star } from "lucide-react"
 import Image from "next/image"
+import CountDown from "./CountDown"
 
 const FlashSaleSection = ({sales}:{sales:IProduct[]}) => {
   return (
     <div className="container mx-auto my-24">
-        <div>
+        <div className="flex items-center">
             <h2>Flash Deals</h2>
-            <div></div>
+            <CountDown/>
         </div>
         <div className="grid grid-cols-3 gap-4">
             {
